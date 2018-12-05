@@ -18,12 +18,14 @@
 #include <signal.h>
 #include <sys/time.h>
 #include <curses.h>
+#include <unistd.h>
 
 #include "worms.h"
 #include "helper.h"
 
+int TIMESTEP = 50000;
 
-#define TIMESTEP 200000
+int paused = 0;
 
 
 void SetTimer(void);
@@ -51,6 +53,7 @@ int main(void) {
     }
 
     noecho();
+    nodelay(mainwin, TRUE);
     keypad(mainwin, TRUE);
     oldcur = curs_set(0);
 
@@ -64,42 +67,8 @@ int main(void) {
     /*  Loop and get user input  */
 
     while ( 1 ) {
-        int key = getch();
-
-        switch ( key ) {
-
-        case KEY_UP:
-        case 'Y':
-        case 'y':
-            ChangeDir(UP);
-            break;
-
-        case KEY_DOWN:
-        case 'N':
-        case 'n':
-            ChangeDir(DOWN);
-            break;
-
-        case KEY_LEFT:
-        case 'G':
-        case 'g':
-            ChangeDir(LEFT);
-            break;
-
-        case KEY_RIGHT:
-        case 'J':
-        case 'j':
-            ChangeDir(RIGHT);
-            break;
-
-        case 'Q':
-        case 'q':
-            Quit(USER_QUIT);
-            break;
-            
-        }
+        usleep(1);
     }
-
 
     /*  We never get here  */
 
@@ -122,8 +91,8 @@ void SetTimer(void) {
 
     /*  Set timer  */
 
-    it.it_interval.tv_usec = TIMESTEP;
-    it.it_value.tv_usec    = TIMESTEP;
+    it.it_interval.tv_usec = TIMESTEP/32;
+    it.it_value.tv_usec    = TIMESTEP/32;
     setitimer(ITIMER_REAL, &it, NULL);
 }
 

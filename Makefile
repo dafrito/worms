@@ -1,5 +1,5 @@
 worms: helper.c worms.c main.c
-	$(CC) -o$@ $^ -lcurses
+	$(CC) -Wall -O2 -g -o$@ $^ -lcurses
 
 clean:
 	rm -f worms

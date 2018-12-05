@@ -12,6 +12,7 @@
 
 
 #include <stdlib.h>
+#include <string.h>
 
 #include <curses.h>
 
@@ -21,12 +22,14 @@
 
 #define MOVESCORE  1
 #define FOODSCORE 10
-#define WORMSIZE   8
+#define WORMSIZE  strlen(WORMTEXT)
 
 static WORM * worm;
-static int dir = DOWN;
+int dir = DOWN;
 static int rows, cols;
 int score = 0;
+static const char* WORMTEXT = "92.9_KUZU_LP_FM";
+static int WORMCHARINDEX = 0;
 
 void PlaceFood(void);
 void Draw(void);
@@ -91,7 +94,7 @@ void Draw(void) {
 
     while ( temp ) {
         move(temp->y, temp->x);
-        addch(WORMBIT);
+        addch(WORMTEXT[WORMCHARINDEX++ % strlen(WORMTEXT)]);
         temp = temp->next;
     }
 
@@ -144,6 +147,8 @@ void MoveWorm(void) {
         x = temp->x + 1;
         y = temp->y;
         break;
+    default:
+        abort();
     }
 
 
@@ -176,7 +181,7 @@ void MoveWorm(void) {
         /*  Add new wormbit  */
 
         move(y, x);
-        addch(WORMBIT);
+        addch(WORMTEXT[WORMCHARINDEX++ % strlen(WORMTEXT)]);
         if ( ch == WORMFOOD ) {
 
             /*  Place some new food  */
